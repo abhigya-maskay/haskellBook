@@ -1,10 +1,10 @@
 
 ==================== FINAL INTERFACE ====================
-2018-07-17 16:01:06.407783202 UTC
+2018-07-17 16:26:40.172992449 UTC
 
 interface main:Main 8043
-  interface hash: 1bf788da3279faf6f532757fb2e2293a
-  ABI hash: 56f849574c7e83b4ce7af6fa4f5790aa
+  interface hash: 68f473fccb6932970c2a7b3a34992965
+  ABI hash: 38e8544164bc155adf482621282f5cdc
   export-list hash: 0a47e29a06e02b5a361ad4557194d3d4
   orphan hash: f1dc95c3260842b1c85b8aae81a80134
   flag hash: acdb9635464a440c616e74d417becfb4
@@ -418,7 +418,7 @@ b93daf1c7225d8b1a27d37bc8d15a792
                     } in
                     go2 ww ww1,
                     GHC.Types.: @ GHC.Types.Char w ww2 #)) -}
-fc81745cd4b850e9d5a2baab9f59e802
+a3ef0958e8a3ef13ebc55748e4d52865
   $wgameOver ::
     GHC.Base.String
     -> [GHC.Types.Char]
@@ -428,21 +428,42 @@ fc81745cd4b850e9d5a2baab9f59e802
      Unfolding: (\ (ww :: GHC.Base.String)
                    (ww1 :: [GHC.Types.Char])
                    (w :: GHC.Prim.State# GHC.Prim.RealWorld) ->
-                 case GHC.List.$wlenAcc @ GHC.Types.Char ww1 0# of ww2 { DEFAULT ->
-                 case GHC.Prim.># ww2 7# of lwild {
-                   DEFAULT -> (# w, GHC.Tuple.() #)
-                   1#
-                   -> case GHC.IO.Handle.Text.hPutStr2
-                             GHC.IO.Handle.FD.stdout
-                             Main.gameOver3
-                             GHC.Types.True
-                             w of ds1 { (#,#) ipv ipv1 ->
-                      case GHC.IO.Handle.Text.hPutStr2
-                             GHC.IO.Handle.FD.stdout
-                             (GHC.CString.unpackAppendCString# Main.gameOver2 ww)
-                             GHC.Types.True
-                             ipv of ds2 { (#,#) ipv2 ipv3 ->
-                      System.Exit.exitSuccess1 @ () ipv2 } } } }) -}
+                 let {
+                   $j :: GHC.Prim.Int# -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
+                     <join 1> {- Arity: 1, Strictness: <S,U> -}
+                   = \ (ww2 :: GHC.Prim.Int#)[OneShot] ->
+                     case GHC.Prim.># ww2 7# of lwild {
+                       DEFAULT -> (# w, GHC.Tuple.() #)
+                       1#
+                       -> case GHC.IO.Handle.Text.hPutStr2
+                                 GHC.IO.Handle.FD.stdout
+                                 Main.gameOver3
+                                 GHC.Types.True
+                                 w of ds1 { (#,#) ipv ipv1 ->
+                          case GHC.IO.Handle.Text.hPutStr2
+                                 GHC.IO.Handle.FD.stdout
+                                 (GHC.CString.unpackAppendCString# Main.gameOver2 ww)
+                                 GHC.Types.True
+                                 ipv of ds2 { (#,#) ipv2 ipv3 ->
+                          System.Exit.exitSuccess1 @ () ipv2 } } }
+                 } in
+                 letrec {
+                   $wgo :: [GHC.Types.Char]
+                           -> GHC.Prim.Int# -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
+                     <join 2> {- Arity: 2, Strictness: <S,1*U><S,U>, Inline: [0] -}
+                   = \ (w1 :: [GHC.Types.Char]) (ww2 :: GHC.Prim.Int#) ->
+                     case w1 of wild {
+                       [] -> $j ww2
+                       : y ys
+                       -> case GHC.List.elem
+                                 @ GHC.Types.Char
+                                 GHC.Classes.$fEqChar
+                                 y
+                                 ww of wild1 {
+                            GHC.Types.False -> $wgo ys (GHC.Prim.+# ww2 1#)
+                            GHC.Types.True -> $wgo ys ww2 } }
+                 } in
+                 $wgo ww1 0#) -}
 4c4c51134b6d6b76f753bae50352cf3b
   $wgameWin ::
     [GHC.Base.Maybe GHC.Types.Char]
@@ -577,14 +598,14 @@ a70cef1a31f1e7aba13b03cd32752818
   {- Arity: 1, HasNoCafRefs, Strictness: <L,A>,
      Unfolding: InlineRule (1, True, True)
                 (\ (ds :: GHC.Types.Char) -> GHC.Base.Nothing @ GHC.Types.Char) -}
-540c73f43a44ca44c24917389051cb45
+f413e592102b015d57d1e844746c83d0
   gameOver :: Main.Puzzle -> GHC.Types.IO ()
   {- Arity: 2, Strictness: <S(LLS),1*U(U,A,1*U)><S,U>,
      Unfolding: InlineRule (0, True, True)
                 Main.gameOver1
                   `cast`
                 (<Main.Puzzle>_R ->_R Sym (GHC.Types.N:IO[0] <()>_R)) -}
-6693fc99f8d5e03a0768da18b8430dee
+58c58fd093776537b3f7e24d1eaa6286
   gameOver1 ::
     Main.Puzzle
     -> GHC.Prim.State# GHC.Prim.RealWorld
@@ -626,14 +647,14 @@ ea5f1fd9567f04155ba99ac55c790a1b
 7fb334eeb9461271fd8dcb18752ffc84
   gameWin3 :: GHC.Prim.Addr#
   {- HasNoCafRefs, Unfolding: ("You win!"#) -}
-384476aa98a2869e2a9a205c95976c33
+6d347414f6a5088c1720aa50e6c099db
   gameWords :: GHC.Types.IO Main.WordList
   {- Arity: 1, Strictness: <S,U>,
      Unfolding: InlineRule (0, True, True)
                 Main.gameWords1
                   `cast`
                 (Sym (GHC.Types.N:IO[0] <Main.WordList>_R)) -}
-f9731d86a8301bc08c5a6ddd7965b4ac
+d39abddc42d617e559458fe5b70d6592
   gameWords1 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, Main.WordList #)
@@ -653,7 +674,7 @@ f9731d86a8301bc08c5a6ddd7965b4ac
                        (Data.OldList.lines ipv3))
                       `cast`
                     (Sym (Main.N:WordList[0])) #) } }) -}
-835f9b44fda1f2f57c0014cfd689e71c
+3de482ecf28048f28a1a131247011293
   gameWords2 :: GHC.Base.String -> GHC.Types.Bool
   {- Arity: 1, HasNoCafRefs, Strictness: <S,1*U>,
      Unfolding: (\ (w :: GHC.Base.String) ->
@@ -663,7 +684,7 @@ f9731d86a8301bc08c5a6ddd7965b4ac
                    1#
                    -> GHC.Prim.tagToEnum#
                         @ GHC.Types.Bool
-                        (GHC.Prim.<# ww2 9#) } }) -}
+                        (GHC.Prim.<# ww2 7#) } }) -}
 95cd70e0e4a9dd69b2787af97c1d11ee
   handleGuess ::
     Main.Puzzle -> GHC.Types.Char -> GHC.Types.IO Main.Puzzle
@@ -763,12 +784,12 @@ b69d90df12c78bba8abf1fb2abd66af0
 1fc6081417102a9dc6d7b06eb14d87f6
   handleGuess8 :: GHC.Prim.Addr#
   {- HasNoCafRefs, Unfolding: ("Your guess was: "#) -}
-bad598e87e6e98cd2330d3a251add8e0
+6673758ceba848f8b7ddc3fc92be33a5
   main :: GHC.Types.IO ()
   {- Arity: 1, Strictness: <S,U>,
      Unfolding: InlineRule (0, True, True)
                 Main.main1 `cast` (Sym (GHC.Types.N:IO[0] <()>_R)) -}
-eb253aabb0897c7679e18f54c4c76c95
+e2fb926514c8d0c3361021e1bd3e1eec
   main1 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
@@ -814,7 +835,7 @@ eb253aabb0897c7679e18f54c4c76c95
                       s1)
                    (GHC.Types.[] @ GHC.Types.Char)
                    ipv5 } } }) -}
-37e52d0a8e2be76e0f7f7ebcbacd8c03
+e5bdc80dec9386281519967045096acc
   main2 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, () #)
@@ -822,9 +843,9 @@ eb253aabb0897c7679e18f54c4c76c95
      Unfolding: (GHC.TopHandler.runMainIO1
                    @ ()
                    Main.main1 `cast` (Sym (GHC.Types.N:IO[0] <()>_R))) -}
-4fceacf76d0f25085e7d245cf3a41c5a
+8cd38b6775d3e16b6fa08cc4354ca035
   maxWordLength :: GHC.Types.Int
-  {- HasNoCafRefs, Strictness: m, Unfolding: (GHC.Types.I# 9#) -}
+  {- HasNoCafRefs, Strictness: m, Unfolding: (GHC.Types.I# 7#) -}
 b0db760dbf91614cf0e5d73ca129a7d1
   minWordLength :: GHC.Types.Int
   {- HasNoCafRefs, Strictness: m, Unfolding: (GHC.Types.I# 5#) -}
@@ -836,14 +857,14 @@ a965428fa41dbb012b8bdd63459cda34
                   `cast`
                 (<Main.WordList>_R
                  ->_R Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R)) -}
-09adb58050dd9689fbb1ba0d2c6a0565
+40f697b3448824bbb842b0f38fca9180
   randomWord' :: GHC.Types.IO GHC.Base.String
   {- Arity: 1, Strictness: <S,U>,
      Unfolding: InlineRule (0, True, True)
                 Main.randomWord'1
                   `cast`
                 (Sym (GHC.Types.N:IO[0] <GHC.Base.String>_R)) -}
-b0d86724fe761e999c90d744e0956229
+b8bdfe0c78c7f4261b1ae75e2e2eb58b
   randomWord'1 ::
     GHC.Prim.State# GHC.Prim.RealWorld
     -> (# GHC.Prim.State# GHC.Prim.RealWorld, GHC.Base.String #)

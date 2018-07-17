@@ -19,7 +19,7 @@ minWordLength :: Int
 minWordLength = 5
 
 maxWordLength :: Int
-maxWordLength = 9
+maxWordLength = 7
 
 gameWords :: IO WordList
 gameWords = do
@@ -89,10 +89,11 @@ handleGuess puzzle guess = do
 
 gameOver :: Puzzle -> IO ()
 gameOver (Puzzle wordToGuess _ guessed) =
-  when ((length guessed) > 7) $
+  when ((length guessedWrong) > 7) $
     do putStrLn "You Lose!"
        putStrLn $ "The word was: " ++ wordToGuess
        exitSuccess
+    where guessedWrong = filter (\s -> not $ s `elem` wordToGuess) guessed
 
 gameWin :: Puzzle -> IO ()
 gameWin (Puzzle _ filledInSoFar _) =
