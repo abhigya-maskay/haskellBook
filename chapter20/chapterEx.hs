@@ -29,4 +29,4 @@ filterF :: (Applicative f, Foldable t, Monoid (f a)) => (a -> Bool) -> t a -> f 
 filterF f = foldMap (\a -> if (f a) then (pure a) else mempty)
 
 main :: IO()
-main = undefined
+main = undefined 
