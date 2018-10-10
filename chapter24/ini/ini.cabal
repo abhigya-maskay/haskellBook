@@ -22,3 +22,6 @@ executable ini
                        , trifecta
                        , hspec
                        , bytestring
+                       , containers
+                       , text
+                       , raw-strings-qq
