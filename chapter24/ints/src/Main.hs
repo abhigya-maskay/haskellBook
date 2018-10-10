@@ -15,8 +15,11 @@ module Main where
 
   base10Integer :: Parser Integer
   base10Integer = do
-    a <- (read <$> some parseDigit) :: Parser Integer
-    return a
+    sign <- optional (char '-')
+    num <- some parseDigit
+    case sign of 
+      Nothing -> return (read num)
+      Just x -> return (read $ x:num)
 
   main :: IO()
   main = undefined
