@@ -16,8 +16,8 @@ module Main where
   decimalToBinary :: Integer -> String
   decimalToBinary n = leftPad 8 $ showIntAtBase 2 intToDigit n ""
 
-  binaryToDecimal :: String -> IPAddress
-  binaryToDecimal = IPAddress . fst . fromJust . listToMaybe . readInt 2 (`elem` ("01" :: String)) digitToInt
+  binaryToIp :: String -> IPAddress
+  binaryToIp = IPAddress . fst . fromJust . listToMaybe . readInt 2 (`elem` ("01" :: String)) digitToInt
 
   ipToBinary :: [Integer] -> [String]
   ipToBinary = fmap decimalToBinary
@@ -39,7 +39,7 @@ module Main where
 
   parseIpv4 :: Parser IPAddress
   parseIpv4 = do
-    ip <- binaryToDecimal . foldIp <$> parseIp
+    ip <- binaryToIp . foldIp <$> parseIp
     return $ ip
   main :: IO ()
   main = undefined
