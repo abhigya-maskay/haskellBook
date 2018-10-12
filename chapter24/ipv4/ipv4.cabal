@@ -21,3 +21,4 @@ executable ipv4
                   , text
                   , trifecta
                   , bytestring
+                  , split

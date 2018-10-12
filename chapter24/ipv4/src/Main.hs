@@ -7,8 +7,17 @@ module Main where
   import Data.Word
   import Text.Trifecta
   import Data.Maybe
+  import Data.List.Split
 
-  data IPAddress = IPAddress Word32 deriving (Eq, Ord, Show)
+  data IPAddress = IPAddress Word32 deriving (Eq, Ord)
+  instance Show IPAddress where
+    show = show . intercalate "." . splitToDecimal . ipToBinary 
+
+  ipToBinary :: IPAddress -> String
+  ipToBinary (IPAddress a) = decimalToBinary $ ((fromIntegral a) :: Integer)
+
+  splitToDecimal :: String -> [String]
+  splitToDecimal = fmap show . fmap binaryToDecimal . splitPlaces [8,8,8,8]
 
   leftPad :: Integer -> String -> String
   leftPad n s =  (take (fromIntegral (n - (genericLength s))) $ repeat '0') ++ s
@@ -16,15 +25,19 @@ module Main where
   decimalToBinary :: Integer -> String
   decimalToBinary n = leftPad 8 $ showIntAtBase 2 intToDigit n ""
 
-  binaryToIp :: String -> IPAddress
-  binaryToIp = IPAddress . fst . fromJust . listToMaybe . readInt 2 (`elem` ("01" :: String)) digitToInt
+  binaryToDecimal :: String -> Integer
+  binaryToDecimal = fst . fromJust . listToMaybe . readInt 2 (`elem` ("01" :: String)) digitToInt
 
-  ipToBinary :: [Integer] -> [String]
-  ipToBinary = fmap decimalToBinary
+  binaryToIP :: String -> IPAddress
+  binaryToIP s = IPAddress ((fromIntegral . binaryToDecimal $ s) :: Word32)
+
+  ipListToBinary :: [Integer] -> [String]
+  ipListToBinary = fmap decimalToBinary
 
   foldIp :: [Integer] -> String
-  foldIp s = foldr (++) [] (ipToBinary s)
+  foldIp s = foldr (++) [] (ipListToBinary s)
   foldIP _ = ""
+  
 
   parseIp :: Parser [Integer]
   parseIp = do
@@ -39,7 +52,8 @@ module Main where
 
   parseIpv4 :: Parser IPAddress
   parseIpv4 = do
-    ip <- binaryToIp . foldIp <$> parseIp
+    ip <- binaryToIP . foldIp <$> parseIp
     return $ ip
+
   main :: IO ()
   main = undefined
