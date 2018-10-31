@@ -2,6 +2,10 @@
 
 module Main where
 
+import Control.Monad.Trans.Class
+import Control.Monad.IO.Class
+import Control.Monad (liftM)
+
 newtype MaybeT m a = MaybeT { runMaybeT :: m (Maybe a) }
 
 instance (Functor m) => Functor (MaybeT m) where
@@ -20,6 +24,12 @@ instance (Monad m) => Monad (MaybeT m) where
     case v of
       Nothing -> return Nothing
       Just y -> runMaybeT (f y)
+
+instance MonadTrans MaybeT where
+  lift = MaybeT . liftM Just
+
+instance (MonadIO m) => MonadIO (MaybeT m) where
+  liftIO = lift . liftIO
 
 
 main :: IO ()
