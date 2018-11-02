@@ -1,10 +1,8 @@
 module WordNumber where
+  import Data.List (intersperse)
 
-import Data.List (intersperse)
-
-digitToWord :: Int -> String
-digitToWord n =
-  case n of
+  digitToWord :: Int -> String
+  digitToWord n = case n of
     0 -> "Zero"
     1 -> "One"
     2 -> "Two"
@@ -17,12 +15,9 @@ digitToWord n =
     9 -> "Nine"
     _ -> "Unknown"
 
-digits :: Int -> [Int]
-digits n = go n 10 []
-  where go n counter collector=
-          case (div n counter == 0) of
-            True -> concat[[mod n counter], collector]
-            False -> go (div n counter) 10  $ concat [[mod n counter], collector]
+  digits :: Int -> [Int]
+  digits 0 = []
+  digits n = digits (n `div` 10) ++ [n `mod` 10] 
 
-wordNumber :: Int -> String
-wordNumber n = concat $ intersperse "-" $ map digitToWord $ digits n
+  wordNumber :: Int -> String
+  wordNumber n = concat . intersperse "-" . map digitToWord . digits $ n
