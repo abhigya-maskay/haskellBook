@@ -1,16 +1,14 @@
 import Data.Char
 
-returnUpper :: String -> String
-returnUpper s = filter (isUpper) s
+filterUpper :: String -> String
+filterUpper = filter isUpper
 
 capitalizeFirst :: String -> String
-capitalizeFirst s = toUpper (head s) : (tail s)
+capitalizeFirst s = (toUpper . head $ s) : (tail s)
 
 capitalize :: String -> String
-capitalize s =
-  case (length s == 0) of
-    True -> []
-    False -> toUpper (head s) : (capitalize $ tail s)
+capitalize "" = []
+capitalize s = (toUpper . head $ s) : (capitalize . tail $ s)
 
-firstCapital :: String -> Char
-firstCapital s = (toUpper . head) s
+returnFirstCapital :: String -> Char
+returnFirstCapital = toUpper . head

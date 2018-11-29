@@ -1,13 +1,10 @@
-filterMult :: Int -> [Int]
-filterMult n = filter (\x -> rem x n == 0) [1..30]
+import Data.List
 
-filterMultLength :: Int -> Int
-filterMultLength n = length . (filter (\x -> rem x n == 0)) $ [1..30]
+filterMult3 :: [Integer]
+filterMult3 = filter (\x -> x `mod` 3 == 0) [1..30]
 
-getWords :: String -> [String]
-getWords sent =
-      case (' ' `elem` sent) of
-        True -> [takeWhile (/= ' ') sent] ++ getWords (tail $ dropWhile(/= ' ') sent)
-        False -> [sent]
-myFilter :: String -> [String]
-myFilter s = filter (\x -> not (x `elem` ["a","an","the"])) $ getWords s
+filterMult3Length :: Int
+filterMult3Length = length filterMult3
+
+filterArticles :: String -> [String]
+filterArticles = filter (\x -> not $ x `elem` ["a", "an", "the"]) . words
