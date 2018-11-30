@@ -1,15 +1,8 @@
 stops = "pbtdkg"
 vowels = "aeiou"
 
-combineStopVowel :: [String]
-combineStopVowel = [[x] ++ [y] ++ [z] | x <- stops, y <- vowels, z <- stops]
+makeWords :: String -> String -> [String]
+makeWords stops vowels = [ [a,b,c] | a <- stops, b <- vowels, c <- stops]
 
-combineStopVowelP :: [String]
-combineStopVowelP = filter (\x -> head x == 'p') combineStopVowel
-
-combineStopVowelTup :: [(Char,Char,Char)]
-combineStopVowelTup = [(x,y,z) | x <- stops, y <- vowels, z <- stops]
-
-seekritFunc :: String -> Double
-seekritFunc x =
-  (/) (fromIntegral $ sum (map length (words x))) (fromIntegral $ length (words x))
+makeWordsFiltered :: String -> String -> [String]
+makeWordsFiltered stops vowels = [ [a,b,c] | a <- stops, b<- vowels, c <- stops, a == 'p']
