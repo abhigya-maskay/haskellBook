@@ -1,52 +1,43 @@
 f :: Int -> String
-f = show
+f = undefined
 
 g :: String -> Char
-g = head 
+g = undefined
 
 h :: Int -> Char
-h = head . show
+h x = g (f x)
 
-data A 
+
+data A
 data B
 data C
 
-aToB :: A -> B
-aToB = undefined
-
-bToC :: B -> C
-bToC = undefined
-
-aToC :: A -> C
-aToC = undefined
-
 q :: A -> B
-q = aToB
+q = undefined
 
 w :: B -> C
-w = bToC
+w = undefined
 
 e :: A -> C
-e = aToC
+e x = w (q x)
+
 
 data X
 data Y
 data Z
 
-xToZ :: X -> Z
-xToZ = undefined
-
-yToZ :: Y -> Z
-yToZ = undefined
-
 xz :: X -> Z
-xz = xToZ
+xz = undefined
 
 yz :: Y -> Z
-yz = yToZ
+yz = undefined
 
-xform :: (X,Y) -> (Z, Z)
+xform :: (X,Y) -> (Z,Z)
 xform (x,y) = (xz x, yz y)
 
-munge :: (x -> y) -> (y -> (w,z)) -> x -> w
-munge xToY yToWz = fst . yToWz . xToY
+
+munge :: (x -> y)
+      -> (y -> (w,z))
+      -> x
+      -> w
+munge xToY yToWZ x = fst (yToWZ (xToY x))

@@ -1,59 +1,44 @@
 myOr :: [Bool] -> Bool
-myOr [] = False
-myOr (x:xs) = x || myOr xs
+myOr = elem True
 
 myAny :: (a -> Bool) -> [a] -> Bool
-myAny bool list =
-  myOr $ map bool list
+myAny f list = myOr (map f list)
 
-myRecElem :: Eq a => a -> [a] -> Bool
-myRecElem _ []= False
-myRecElem x (y:ys) = x == y || myRecElem x ys
+myElemRecursive :: Eq a => a -> [a] -> Bool
+myElemRecursive _ [] = False
+myElemRecursive element list = (== element) (head list) || myElemRecursive element (tail list)
 
-myElem :: Eq a => a -> [a] -> Bool
-myElem _ [] = False
-myElem x list = myAny (x ==) list
+myElemAny :: Eq a => a -> [a] -> Bool
+myElemAny element list = myAny (== element) list
 
 myReverse :: [a] -> [a]
 myReverse [] = []
-myReverse (x:xs) = myReverse xs ++ [x]
+myReverse list = myReverse (tail list) ++ [head list]
 
 squish :: [[a]] -> [a]
 squish [] = []
-squish (x:xs) = x ++ squish xs
+squish list = head list ++ squish (tail list)
 
 squishMap :: (a -> [b]) -> [a] -> [b]
-squishMap f list = squish (map f list)
+squishMap f list = concat $ map f list
 
 squishAgain :: [[a]] -> [a]
-squishAgain list = squishMap (id) list
+squishAgain list = squishMap id list
 
-myMaximumBy :: (a -> a -> Ordering)
-               -> [a] -> a
-myMaximumBy f (x1:x2:xs) =
-  case (length xs == 0) of
-    True -> case (f x1 x2) of
-      LT -> x2
-      EQ -> x2
-      GT -> x1
-    False -> case (f x1 x2) of
-      LT -> myMaximumBy f $ x2 : xs
-      EQ -> myMaximumBy f $ x2 : xs
-      GT -> myMaximumBy f $ x1 : xs
+myMaximumBy :: (a -> a -> Ordering) -> [a] -> a
+myMaximumBy f list = foldr max (head list) (tail list) where
+  max = \a b -> case f a b of
+    LT -> b
+    _ -> a
 
-myMinimumBy :: (a -> a -> Ordering)
-               -> [a] -> a
-myMinimumBy f (x:[]) = x
-myMinimumBy f (x:xs) = go f x xs
-  where go f x (y:[]) =
-          case (f x y) of
-            LT -> x
-            EQ -> y
-            GT -> y
-        go f x (y:ys) = go f (go f x [y]) ys
+myMinimumBy :: (a -> a -> Ordering) -> [a] -> a
+myMinimumBy f list =  foldr min (head list) (tail list) where
+  min = \a b -> case f a b of
+    LT -> a
+    _ -> b
 
 myMaximum :: (Ord a) => [a] -> a
-myMaximum list = myMaximumBy compare list
+myMaximum = myMaximumBy compare 
 
 myMinimum :: (Ord a) => [a] -> a
-myMinimum list = myMinimumBy compare list
+myMinimum = myMinimumBy compare
