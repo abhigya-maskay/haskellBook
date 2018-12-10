@@ -1,47 +1,44 @@
 module Cipher where
-import Data.Char
+import           Data.Char
 
-getEncInt :: Int -> Char -> Int
-getEncInt _ ' ' = 32
-getEncInt n s =
-  case (isUpper s) of
-    True -> (mod ((ord s) - (ord 'A') + n) 26) + ord 'A'
-    False -> (mod ((ord s) - (ord 'a') + n) 26) + ord 'a'
+encode :: String -> String -> String
+encode keyword word = shift (getKeywordShifts keyword word) word where
+  shift :: [Int] -> [Char] -> [Char]
+  shift [] _          = []
+  shift _ []          = []
+  shift (i:is) (x:xs) = (if (isAlpha x) then (getShiftedChar i x) else x):(shift is xs)
 
-getDecInt :: Int -> Char -> Int
-getDecInt _ ' ' = 32
-getDecInt n s =
-  case (isUpper s) of
-    True -> (mod ((ord s) - (ord 'A') - n) 26) + ord 'A'
-    False -> (mod ((ord s) - (ord 'a') - n) 26) + ord 'a'
+decode :: String -> String -> String
+decode keyword word = unshift (getKeywordShifts keyword word) word where
+  unshift :: [Int] -> [Char] -> [Char]
+  unshift [] _          = []
+  unshift _ []          = []
+  unshift (i:is) (x:xs) = (if (isAlpha x) then (getShiftedChar (-i) x) else x):(unshift is xs)
 
-getKeywordEncoding :: String -> String
-getKeywordEncoding " " = " "
-getKeywordEncoding s = go s "ALLY" []
-  where go string "" acc = go string "ALLY" acc
-        go "" _ acc = acc
-        go string ally acc =
-          case (head string) of
-            ' ' -> go (tail string) ally (acc ++ " ")
-            _   -> go (tail string) (tail ally) (acc ++ [head ally])
+getKeywordEncoding :: String -> String -> String
+getKeywordEncoding keyword []     = []
+getKeywordEncoding keyword (x:xs) = case (isAlpha x) of
+  True -> encodeChar keyword : getKeywordEncoding (cycleWord keyword) xs where
+    encodeChar :: String -> Char
+    encodeChar = head
+  False -> x : getKeywordEncoding keyword xs
 
-getShift :: Char -> Int
-getShift ' ' = 0
-getShift s   =
-  case (isUpper s) of
-    True -> (ord s) - (ord 'A')
-    False -> (ord s) - (ord 'a')
+getShifts :: String -> [Int]
+getShifts = map getShift where
+  getShift :: Char -> Int
+  getShift s = if (isAlpha s) then (ord s - ord 'A') else 0
 
-encodeWord :: String -> String
-encodeWord s = go s (getKeywordEncoding s)
-  where go string key =
-          case (length string == 0) of
-            True -> []
-            False -> (chr (getEncInt (getShift . head $ key) . head $ string)) : (go (tail string) (tail key))
+getKeywordShifts :: String -> String -> [Int]
+getKeywordShifts keyword word = getShifts . getKeywordEncoding (map toUpper keyword) $ word
 
-decodeWord :: Int -> String -> String
-decodeWord n s =
-  case (length s == 0) of
-    True -> []
-    False -> (chr (getDecInt n . head $ s)) : decodeWord n (tail s)
+getShiftedChar :: Int -> Char -> Char
+getShiftedChar shift c = if (isUpper c) then getShiftedCharUpper shift c else getShiftedCharLower shift c
 
+getShiftedCharUpper :: Int -> Char -> Char
+getShiftedCharUpper shift c = chr $ (((ord c - ord 'A') + shift) `mod` 26) + ord 'A'
+
+getShiftedCharLower :: Int -> Char -> Char
+getShiftedCharLower shift c = chr $ (((ord c - ord 'a') + shift) `mod` 26) + ord 'a'
+
+cycleWord :: [a] -> [a]
+cycleWord s = tail s ++ [head s]
