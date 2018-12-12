@@ -1,16 +1,12 @@
-import Data.Char
-import Data.List
+import           Data.Char
+import           Data.List
 
 capitalizeWord :: String -> String
-capitalizeWord [] = []
 capitalizeWord (x:xs) = toUpper x : xs
 
 capitalizeParagraph :: String -> String
-capitalizeParagraph [] = []
-capitalizeParagraph s = foldr (++) [] ((intersperse " ") . go . words $ s)
-  where
-    go [] = []
-    go xs@(x:xtail) =
-          case ('.' `elem` x) of
-            True ->  x : ((capitalizeWord . head $ xtail) : (go . tail $ xtail))
-            False -> (x : (go xtail))
+capitalizeParagraph paragraph = (toUpper . head $ paragraph):(capitalize . tail $ paragraph) where
+capitalize [] = []
+capitalize ('.':[]) = "."
+capitalize ('.':xs) = ". " ++ (capitalizeWord . head . words $ xs) ++ capitalize (foldr (++) [] (tail . intersperse " " . words $ xs))
+capitalize (x:xs) = x : capitalize xs

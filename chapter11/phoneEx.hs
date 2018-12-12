@@ -1,100 +1,87 @@
-import Data.Char
+import           Data.Char
+import           Data.Function
+import           Data.List
 
-data Button = Button {
-  digit :: Char
-  ,chars :: String
-  }
-  deriving (Eq,Show)
-data DaPhone = DaPhone [Button] deriving (Show)
+newtype DaPhone = DaPhone [Button]
+
+data Button = Button Char String
 
 phone :: DaPhone
-phone = DaPhone [Button '1' "1"
-                ,Button '2' "abc2"
-                ,Button '3' "def3"
-                ,Button '4' "ghi4"
-                ,Button '5' "jkl6"
-                ,Button '6' "mno6"
-                ,Button '7' "pqrs7"
-                ,Button '8' "tuv8"
-                ,Button '9' "wxyz9"
-                ,Button '*' ""
-                ,Button '#' ".,"
-                ,Button '0' " 0"
-                ]
+phone = DaPhone [ Button '1' "1"
+                , Button '2' "ABC2"
+                , Button '3' "DEF3"
+                , Button '4' "GHI4"
+                , Button '5' "JKL5"
+                , Button '6' "MNO6"
+                , Button '7' "PQRS7"
+                , Button '8' "TUV8"
+                , Button '9' "WXYZ9"
+                , Button '*' "^*"
+                , Button '0' " 0"
+                , Button '#' ".,"]
 
 convo :: [String]
-convo =
-  ["Wanna play 20 questions"
-  , "Ya"
-  , "U 1st haha"
-  , "Lol ok. Have you ever tasted alcohol"
-  , "Lol ya"
-  , "Wow ur cool haha. Ur turn"
-  , "Ok. Do you think I am pretty Lol"
-  , "Lol ya"
-  , "Just making sure rofl ur turn"
-  ]
+convo = ["Wanna play 20 questions"
+        , "Ya"
+        , "U 1st haha"
+        , "Lol ok. Have you ever tasted alcohol"
+        , "Lol ya"
+        , "Wow ur cool haha.Ur turn"
+        , "Ok. Do you think I am pretty Lol"
+        , "Lol ya"
+        , "Just making sure rofl ur turn"]
 
 type Digit = Char
 type Presses = Int
 
-containsChar :: Char -> Button -> Bool
-containsChar s (Button y ys)= s `elem` ys
 
-getPresses :: Char -> Button -> Int
-getPresses s (Button x (y:ys)) = go s (y:ys) 0
-  where go s (y:ys) acc =
-          case (s == y) of
-            True -> acc + 1
-            False -> go s ys (acc+1)
+reverseTaps :: DaPhone -> Char -> [(Digit, Presses)]
+reverseTaps (DaPhone (x:xs)) char = if isUpper char
+                                       then ('*',1):reverseTap (DaPhone (x:xs)) char
+                                       else reverseTap (DaPhone (x:xs)) char where
+                                         reverseTap :: DaPhone -> Char -> [(Digit, Presses)]
+                                         reverseTap (DaPhone []) _ = []
+                                         reverseTap (DaPhone (b:bs)) c = if includeChar b c
+                                                         then [getTaps b c]
+                                                         else reverseTap (DaPhone bs) c
 
-getButton :: Char -> DaPhone -> Button
-getButton s (DaPhone phone) = head . filter (containsChar s) $ phone
+includeChar :: Button -> Char -> Bool
+includeChar (Button _ chars) char = toUpper char `elem` chars
 
-reverseTaps :: DaPhone
-            -> Char
-            -> [(Digit, Presses)]
-reverseTaps phone s = go phone s []
-  where go phone s acc =
-          case (isUpper s) of
-            True -> go phone (toLower s) [('*',1)]
-            False -> acc ++ [(digit button, getPresses s button)]
-              where button = getButton s phone
+getTaps :: Button -> Char -> (Digit, Presses)
+getTaps button char = go button char 1 where
+  go :: Button -> Char -> Int -> (Digit, Presses)
+  go (Button digit []) _ _ = (digit, 0)
+  go (Button digit (x:xs)) char1 counter = if toUpper char1 == x
+                                             then (digit, counter)
+                                             else go (Button digit xs) char1 (counter + 1)
 
-cellPhonesDead :: DaPhone
-               -> String
-               -> [(Digit, Presses)]
-cellPhonesDead phone [] = []
-cellPhonesDead phone s = foldr ((++) . (reverseTaps phone)) [] s
+cellPhonesDead :: DaPhone -> String -> [(Digit, Presses)]
+cellPhonesDead p = concatMap (reverseTaps p)
 
-convertConvo :: DaPhone -> [String] -> [[(Digit, Presses)]]
-convertConvo phone convo = map (cellPhonesDead phone) convo
+reverseConvo :: DaPhone -> [String] -> [[(Digit, Presses)]]
+reverseConvo p = map (cellPhonesDead p)
 
 fingerTaps :: [(Digit, Presses)] -> Presses
-fingerTaps x = foldr ((+) . snd) 0 x
-
-occurance :: String -> Char -> Int
-occurance [] _ = 0
-occurance s c = foldr (\a b -> if a==c then b+1 else b) 0 s
+fingerTaps = foldr (\(d1,p1) p2 -> p1+p2) 0
 
 mostPopularLetter :: String -> Char
-mostPopularLetter s@(x:xs) = foldr (\a b -> if (occurance s a) > (occurance s b) then a else b) x xs
+mostPopularLetter = head . maximumBy (compare `on` length) . group . sort
 
-letterCost :: Char -> Presses
-letterCost = fingerTaps . (reverseTaps phone)
+mostPopularLetterCost :: String -> Presses
+mostPopularLetterCost s = fingerTaps . filter mostPopular $ digitPresses where
+  digitPresses :: [(Digit, Presses)]
+  digitPresses = cellPhonesDead phone s
 
-mostPopularLetterCost :: String -> Int
-mostPopularLetterCost = letterCost . mostPopularLetter
+  mostPopular :: (Digit, Presses) -> Bool
+  mostPopular (d1,p1) = (d1,p1) == if length tap == 1 then head tap else head . tail $ tap where
+    tap = reverseTaps phone (mostPopularLetter s)
 
 coolestLtr :: [String] -> Char
-coolestLtr = mostPopularLetter . (foldr (++) [])
-
-wordOccurance :: [String] -> String -> Int
-wordOccurance [] _ = 0
-wordOccurance sentence word = foldr (\a b -> if a == word then b+1 else b) 0 sentence
-
-mostPopularWord :: [String] -> String
-mostPopularWord s@(x:xs) = foldr (\a b -> if (wordOccurance s a) > (wordOccurance s b) then a else b) x xs
+coolestLtr = head . maximumBy (compare `on` length) . group . sort . filter isAlpha . concat
 
 coolestWord :: [String] -> String
-coolestWord = mostPopularWord . words . (foldr (++) [])
+coolestWord = head . maximumBy (compare `on` length) . group . sort . concatMap words
+
+main :: IO()
+main = undefined

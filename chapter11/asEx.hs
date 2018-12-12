@@ -1,18 +1,13 @@
-import Data.Char
+import           Data.Char
 
-isSubseqOf :: (Eq a)
-           => [a]
-           -> [a]
-           -> Bool
+isSubseqOf :: (Eq a) => [a] -> [a] -> Bool
 isSubseqOf [] _ = True
 isSubseqOf _ [] = False
-isSubseqOf xs@(x:xtail) ys@(y:ytail) =
-  case (x `elem` ys) of
-    True -> isSubseqOf xtail ytail
-    False -> isSubseqOf xs ytail
+isSubseqOf subseq@(s:ss) (x:xs) = case (s == x) of
+  True  -> isSubseqOf ss xs
+  False -> isSubseqOf subseq xs
 
-capitalizeWords :: String
-                -> [(String,String)]
-capitalizeWords [] = [("","")]
-capitalizeWords xs = map capitalizeFirst $ words xs
-  where capitalizeFirst xs@(x:xtail) = ((toUpper x : xtail), xs)
+capitalizeWords :: String -> [(String, String)]
+capitalizeWords = map capitalize . words where
+  capitalize :: String -> (String, String)
+  capitalize word@(x:xs) = (word, toUpper x : xs)
