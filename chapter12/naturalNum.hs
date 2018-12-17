@@ -1,17 +1,14 @@
-data Nat =
-    Zero
-  | Succ Nat
-  deriving (Eq, Show)
+data Nat = Zero | Succ Nat deriving (Eq, Show)
 
 natToInteger :: Nat -> Integer
-natToInteger Zero = 0
-natToInteger (Succ n) = 1 + (natToInteger n)
+natToInteger Zero     = 0
+natToInteger (Succ a) = 1 + natToInteger a
 
 integerToNat :: Integer -> Maybe Nat
-integerToNat 0 = Just Zero
-integerToNat n =
-  case (n<0) of
-    True -> Nothing
-    False -> Just (makeNat n)
-    where makeNat 0 = Zero
-          makeNat n = Succ(makeNat (n-1))
+integerToNat i = if i < 0
+                    then Nothing
+                    else Just (naturalize i) where
+                      naturalize :: Integer -> Nat
+                      naturalize 0 = Zero
+                      naturalize i = Succ (naturalize (i-1))
+

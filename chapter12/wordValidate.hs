@@ -1,29 +1,18 @@
-import Data.Char
-
-newtype Word' =
-  Word' String deriving (Eq, Show)
+newtype Word' = Word' String deriving (Eq, Show)
 
 vowels :: String
 vowels = "aeiou"
 
-isVowel :: Char -> Bool
-isVowel x = x `elem` vowels
+checkVowels :: Char -> Bool
+checkVowels c = c `elem` vowels
 
-seperateVowelsConsonants :: String -> (String, String)
-seperateVowelsConsonants s = ((filter (isVowel) ls),
-                              filter (\a -> a `elem` ['a'..'z']) . (filter (not . isVowel)) $ ls)
-                             where ls = map toLower s
+countVowels :: String -> Integer
+countVowels = fromIntegral . length . filter checkVowels
 
-countEach :: (String, String) -> (Int, Int)
-countEach (x1,x2) = (length x1, length x2)
-
-countVowelsConsonants :: String -> (Int, Int)
-countVowelsConsonants = countEach . seperateVowelsConsonants
+countConsonants :: String -> Integer
+countConsonants = fromIntegral . length . filter (not . checkVowels)
 
 mkWord :: String -> Maybe Word'
-mkWord s =
-  case (numVowel > numConst) of
-    True -> Nothing
-    False -> Just (Word' s)
-    where numVowel = fst . countVowelsConsonants $ s
-          numConst = snd . countVowelsConsonants $ s
+mkWord s = if countVowels s < countConsonants s
+              then Just (Word' s)
+              else Nothing
