@@ -1,6 +1,3 @@
-import           Data.Array
-
---asldjsalkdjsaldkjsaldkj
 isJust :: Maybe a -> Bool
 isJust (Just _) = True
 isJust _        = False
