@@ -1,14 +1,14 @@
 name:                hangman
 version:             0.1.0.0
-synopsis:            Playing Hangman
+-- synopsis:
 -- description:
-homepage:            Chris N Julie
+homepage:            https://github.com/githubuser/hangman#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Chris Aleen and Julie Moronuki
-maintainer:          haskellbook.com
+author:              Author name here
+maintainer:          example@example.com
 copyright:           2018 Author name here
-category:            Game
+category:            Web
 build-type:          Simple
 cabal-version:       >=1.10
 extra-source-files:  data/dict.txt
